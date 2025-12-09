@@ -81,9 +81,7 @@ jobs:
         run: cd client && npm run build
 
       - name: Build Electron app
-        run: npm run dist
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --publish never
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -101,6 +99,8 @@ jobs:
     needs: [build-web, build-electron]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
 
     steps:
       - name: Download all artifacts
