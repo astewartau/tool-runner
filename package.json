@@ -1,0 +1,64 @@
+{
+  "name": "boutiques-ui",
+  "version": "1.0.0",
+  "description": "Desktop application for discovering, configuring, and executing containerized neuroimaging tools",
+  "main": "main.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\" \"wait-on http://localhost:3000 && electron .\"",
+    "server": "node server/index.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "electron": "electron .",
+    "install-all": "npm install && cd client && npm install",
+    "dist": "npm run build && electron-builder",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win"
+  },
+  "keywords": [
+    "boutiques",
+    "neuroimaging",
+    "bids",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.boutiques.ui",
+    "productName": "Boutiques UI",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "server/**/*",
+      "client/build/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Science"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.medical"
+    },
+    "win": {
+      "target": ["nsis"]
+    }
+  }
+}

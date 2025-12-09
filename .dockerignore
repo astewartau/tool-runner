@@ -1,0 +1,9 @@
+node_modules
+client/node_modules
+cache/*
+!cache/.gitkeep
+notebooks
+.git
+*.md
+.dockerignore
+docker-compose.yml

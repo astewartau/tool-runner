@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+client/build/
+dist/
+out/
+
+# Cache
+cache/*
+!cache/.gitkeep
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Electron builder
+release/

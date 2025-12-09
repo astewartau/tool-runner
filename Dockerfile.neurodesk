@@ -1,0 +1,62 @@
+# Boutiques UI - NeuroDesk Integration
+# This extends the official NeuroDesk image to add Boutiques UI as a JupyterLab app
+
+FROM vnmd/neurodesktop:latest
+
+LABEL maintainer="Boutiques UI"
+LABEL description="NeuroDesk with integrated Boutiques UI for neuroimaging tool discovery and execution"
+
+USER root
+
+# Install Node.js (NeuroDesk already has most dependencies)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+RUN mkdir -p /opt/boutiques-ui
+
+# Copy application files
+COPY package.json /opt/boutiques-ui/
+COPY server /opt/boutiques-ui/server/
+COPY client /opt/boutiques-ui/client/
+COPY assets /opt/boutiques-ui/assets/
+COPY start.sh /opt/boutiques-ui/
+
+# Install dependencies and build
+WORKDIR /opt/boutiques-ui
+RUN npm install --omit=dev \
+    && cd client && npm install && npm run build \
+    && rm -rf client/node_modules client/src
+
+# Create cache directory with proper permissions for any user
+RUN mkdir -p /opt/boutiques-ui/cache && chmod 777 /opt/boutiques-ui/cache
+
+# Fix permissions - make all files readable, start.sh executable, and cache writable
+RUN chmod -R a+rX /opt/boutiques-ui && \
+    chmod +x /opt/boutiques-ui/start.sh && \
+    chmod 777 /opt/boutiques-ui/cache
+
+# Add Boutiques UI to the existing jupyter config
+# Using new_browser_tab: False to open in JupyterLab tab instead of new browser tab
+RUN echo "" >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "# Boutiques UI Integration" >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "c.ServerProxy.servers['boutiques-ui'] = {" >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "    'command': ['/bin/bash', '/opt/boutiques-ui/start.sh']," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "    'port': 3001," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "    'timeout': 60," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "    'new_browser_tab': False," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "    'launcher_entry': {" >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "        'enabled': True," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "        'title': 'Boutiques UI'," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "        'icon_path': '/opt/boutiques-ui/assets/icon.svg'," >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "        'path_info': 'boutiques-ui'" >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "    }" >> /etc/jupyter/jupyter_notebook_config.py && \
+    echo "}" >> /etc/jupyter/jupyter_notebook_config.py
+
+# Fix permissions for run-one cache directory that was causing issues
+RUN mkdir -p /home/jovyan/.cache/run-one && chown -R jovyan:users /home/jovyan/.cache
+
+# Switch back to default user
+USER ${NB_USER}
+WORKDIR /home/${NB_USER}

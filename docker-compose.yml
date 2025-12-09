@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  boutiques-ui-jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      # Mount a local directory for notebooks and data
+      - ./notebooks:/home/jovyan/work
+      # Mount Docker socket so boutiques can run containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - GRANT_SUDO=yes
+    user: root
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
