@@ -21,7 +21,10 @@
     "bids",
     "electron"
   ],
-  "author": "",
+  "author": {
+    "name": "Ashley Stewart",
+    "email": "ashley.stewart@uq.edu.au"
+  },
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
