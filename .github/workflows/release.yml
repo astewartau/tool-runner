@@ -108,11 +108,19 @@ jobs:
         with:
           path: artifacts
 
+      - name: List artifacts
+        run: find artifacts -type f
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/**/*
+            artifacts/boutiques-ui-web/*.tar.gz
+            artifacts/boutiques-ui-linux/*.AppImage
+            artifacts/boutiques-ui-linux/*.deb
+            artifacts/boutiques-ui-mac/*.dmg
+            artifacts/boutiques-ui-win/*.exe
           generate_release_notes: true
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
