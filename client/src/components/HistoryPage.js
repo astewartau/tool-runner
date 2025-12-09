@@ -15,14 +15,12 @@ import {
   IconButton,
   CircularProgress,
   Alert,
-  Tooltip,
-  Divider
+  Tooltip
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import CancelIcon from '@mui/icons-material/Cancel';
-import PendingIcon from '@mui/icons-material/Pending';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 import { fetchExecutions, fetchActiveExecutions } from '../api';
