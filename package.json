@@ -22,8 +22,7 @@
     "electron"
   ],
   "author": {
-    "name": "Ashley Stewart",
-    "email": "ashley.stewart@uq.edu.au"
+    "name": "Ashley Stewart"
   },
   "license": "MIT",
   "dependencies": {
